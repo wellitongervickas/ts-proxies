@@ -1,0 +1,26 @@
+type Obj<T> = {
+  [key in keyof T]: {
+    value: any
+    set: Function
+  }
+}
+
+function readOnly<T, Z extends Obj<T>>(obj: Z) {
+  const getter = {
+    get(target: Z, prop: keyof Z) {
+      return target[prop]?.value
+    }
+  }
+
+  const proxy = new Proxy(obj, getter as any) as unknown as {
+    [key in keyof T]: T[key]
+  }
+
+  return proxy
+}
+
+const proxies = {
+  readOnly
+}
+
+export default proxies
